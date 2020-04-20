@@ -8,27 +8,24 @@
 
 import UIKit
 
-class ViewController: UITableViewController {
+class ViewController: UITableViewController, NoteViewDelegate {
         
     var arrNotes = [[String:String]]()
     
-    var selectedIndex = -1
+    var selectedIndex = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-    
-    @IBAction func addNote(_ sender: Any) {
-        let newDict = ["title" : "TestTitle",
-         "body" : "TestBody"]
-        arrNotes.insert(newDict, at: 0)
         
-        self.selectedIndex = 0
-        self.tableView.reloadData()
-        performSegue(withIdentifier: "showEditorSegue", sender: nil)
+        if let newNotes = UserDefaults.standard.array(forKey: "notes") as? [[String:String]] {
+            arrNotes = newNotes
+        }
     }
     
+    func saveNotesArray() {
+        UserDefaults.standard.set(arrNotes, forKey: "notes")
+        UserDefaults.standard.synchronize()
+    }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return arrNotes.count
@@ -50,6 +47,25 @@ class ViewController: UITableViewController {
         let notesEditor = segue.destination as! NotesViewController
         notesEditor.navigationItem.title = arrNotes[self.selectedIndex]["title"]
         notesEditor.textStr = arrNotes[self.selectedIndex]["body"]
+        notesEditor.delegate = self
+    }
+    
+    func didUpdateNoteWithTitle(newTitle: String, newBody: String) {
+        self.arrNotes[self.selectedIndex]["title"] = newTitle
+        self.arrNotes[self.selectedIndex]["body"] = newBody
+        self.tableView.reloadData()
+        saveNotesArray()
+    }
+    
+    @IBAction func addNote(_ sender: Any) {
+        let newDict = ["title" : "",
+         "body" : ""]
+        arrNotes.insert(newDict, at: 0)
+
+        self.selectedIndex = 0
+        self.tableView.reloadData()
+        saveNotesArray()
+        performSegue(withIdentifier: "showEditorSegue", sender: nil)
     }
 
 }

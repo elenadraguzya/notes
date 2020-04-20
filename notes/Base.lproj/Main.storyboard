@@ -57,9 +57,14 @@
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
                     <navigationItem key="navigationItem" title="Title" id="OO0-OJ-kjF">
-                        <barButtonItem key="rightBarButtonItem" title="Done" id="g39-Cf-2yq"/>
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="g39-Cf-2yq">
+                            <connections>
+                                <action selector="doneEdit:" destination="BYZ-38-t0r" id="ADf-Hw-uHV"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="doneButton" destination="g39-Cf-2yq" id="0DY-0R-EIz"/>
                         <outlet property="text" destination="Jer-N8-KWW" id="jKm-5F-fFa"/>
                     </connections>
                 </viewController>
