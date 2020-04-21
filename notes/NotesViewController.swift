@@ -18,6 +18,7 @@ class NotesViewController: UIViewController, UITextViewDelegate {
     @IBOutlet var text: UITextView!
     
     var delegate : NoteViewDelegate?
+    var note: Note?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +38,11 @@ class NotesViewController: UIViewController, UITextViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        text.text = ""
+       if let note = note {
+           text.text = note.content
+       } else {
+           text.text = ""
+       }
     }
     
     
@@ -53,16 +58,22 @@ class NotesViewController: UIViewController, UITextViewDelegate {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let identifier = segue.identifier else { return }
+        guard let identifier = segue.identifier,
+            let destination = segue.destination as? ViewController
+        else { return }
         
         switch identifier {
-        case "save":
+        case "save" where note != nil:
+            note?.content = text.text ?? ""
+            destination.tableView.reloadData()
+            
+        case "save" where note == nil:
             let note = Note()
-            note.content = text.text ?? ""
-            let destination = segue.destination as! ViewController
+            note.content = text.text
             if note.content != "" {
                 destination.notes.append(note)
             }
+            
         case "cancel":
             print("cancel bar button item tapped")
 

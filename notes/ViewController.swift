@@ -43,6 +43,24 @@ class ViewController: UITableViewController, NoteViewDelegate {
         self.tableView.reloadData()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let identifier = segue.identifier else { return }
+
+        switch identifier {
+        case "showEditorSegue":
+            guard let indexPath = tableView.indexPathForSelectedRow else { return }
+            let note = notes[indexPath.row]
+            let destination = segue.destination as! NotesViewController
+            destination.note = note
+            
+        case "addNote":
+            print("create note bar button item tapped")
+
+        default:
+            print("unexpected segue identifier")
+        }
+    }
+    
     @IBAction func unwindWithSegue(_ segue: UIStoryboardSegue) {
 
     }
