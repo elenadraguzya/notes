@@ -10,28 +10,21 @@ import UIKit
 
 protocol NoteViewDelegate {
     func didUpdateNoteWithTitle(newTitle: String, newBody: String)
-    
+
 }
 
 class NotesViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet var text: UITextView!
-    @IBOutlet weak var doneButton: UIBarButtonItem!
     
-    var textStr : String!
     var delegate : NoteViewDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.text.text = self.textStr
         self.text.becomeFirstResponder()
         self.text.delegate = self
         
-    }
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        self.doneButton.tintColor = UIColor(red: 0, green: 122.0/255.0, blue: 1, alpha: 1)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -40,6 +33,13 @@ class NotesViewController: UIViewController, UITextViewDelegate {
             self.delegate!.didUpdateNoteWithTitle(newTitle: self.navigationItem.title!, newBody: self.text.text)
         }
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        text.text = ""
+    }
+    
     
     func textViewDidChange(_ textView: UITextView) {
         let components = self.text.text.components(separatedBy: ".")
@@ -52,12 +52,22 @@ class NotesViewController: UIViewController, UITextViewDelegate {
         }
     }
     
-    @IBAction func doneEdit(_ sender: Any) {
-        self.text.resignFirstResponder()
-        self.doneButton.tintColor = UIColor.clear
-        if self.delegate != nil {
-            self.delegate!.didUpdateNoteWithTitle(newTitle: self.navigationItem.title!, newBody: self.text.text)
-         }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let identifier = segue.identifier else { return }
+        
+        switch identifier {
+        case "save":
+            let note = Note()
+            note.content = text.text ?? ""
+            let destination = segue.destination as! ViewController
+            if note.content != "" {
+                destination.notes.append(note)
+            }
+        case "cancel":
+            print("cancel bar button item tapped")
+
+        default:
+            print("unexpected segue identifier")
+        }
     }
 }
-
