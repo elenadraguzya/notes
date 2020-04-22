@@ -8,16 +8,10 @@
 
 import UIKit
 
-protocol NoteViewDelegate {
-    func didUpdateNoteWithTitle(newTitle: String, newBody: String)
-
-}
-
 class NotesViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet var text: UITextView!
     
-    var delegate : NoteViewDelegate?
     var note: Note?
     
     override func viewDidLoad() {
@@ -28,21 +22,14 @@ class NotesViewController: UIViewController, UITextViewDelegate {
         
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if self.delegate != nil {
-            self.delegate!.didUpdateNoteWithTitle(newTitle: self.navigationItem.title!, newBody: self.text.text)
-        }
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-       if let note = note {
-           text.text = note.content
-       } else {
-           text.text = ""
-       }
+        
+        if let note = note {
+            text.text = note.content
+        } else {
+            text.text = ""
+        }
     }
     
     

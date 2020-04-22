@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UITableViewController, NoteViewDelegate {
+class ViewController: UITableViewController {
             
     var notes = [Note]() {
         didSet {
@@ -39,8 +39,10 @@ class ViewController: UITableViewController, NoteViewDelegate {
         self.selectedIndex = indexPath.row
     }
     
-    func didUpdateNoteWithTitle(newTitle: String, newBody: String) {
-        self.tableView.reloadData()
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            notes.remove(at: indexPath.row)
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
